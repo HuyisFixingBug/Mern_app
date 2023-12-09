@@ -23,7 +23,7 @@ export default function OAuth() {
                     name: result.user.displayName, email: result.user.email, photo: result.user.photoURL
                 })
             })
-            const data = res.json();
+            const data = await res.json();
             dispatch(singInSuccess(data))
             navigate('/')
             // console.log("res from auth google", data);

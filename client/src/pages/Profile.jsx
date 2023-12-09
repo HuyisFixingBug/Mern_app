@@ -1,11 +1,11 @@
 import React from 'react'
 
-function Auth() {
+function Profile() {
   return (
     <div>
-      Auth
+      profile
     </div>
   )
 }
 
-export default Auth
+export default Profile

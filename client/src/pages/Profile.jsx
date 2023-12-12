@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useRef } from 'react'
+import { Modal, Button } from 'react-bootstrap';
 import { app } from '../../firebase';
 import {getDownloadURL, getStorage, ref, uploadBytesResumable} from 'firebase/storage'
 import { useDispatch } from 'react-redux';
 import { updateUserStart, updateUserSuccess, updateUserFailure,
-deleteUserFailure,deleteUserSuccess, deleteUserStart } from '../../redux/user/userSlice.js';
+deleteUserFailure,deleteUserSuccess, deleteUserStart, signOutStart, signOutFailure, signOutSuccess } from '../../redux/user/userSlice.js';
 function Profile() {
   const dispatch = useDispatch();
   const {currentUser, loading, error} = useSelector((state) => state.user)
@@ -19,6 +20,16 @@ function Profile() {
     // console.log(formData);
 
   // console.log(file);
+useEffect(() => {
+    if (updateSuccess) {
+      const timer = setTimeout(() => {
+        // Đặt lại updateSuccess thành false sau 5 giây
+        setUpdateSuccess(false);
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [updateSuccess]);
+
   useEffect(() =>{
     if(file) {
       handleFIleUpload(file)
@@ -78,6 +89,7 @@ function Profile() {
       }
   }
   const handleDeleteUser = async() =>{
+    if(window.confirm('Are sure want to be deleted user?')) {
     try {
       dispatch(deleteUserStart())
       const res= await fetch(`/api/user/delete/${currentUser._id}`, {
@@ -92,7 +104,24 @@ function Profile() {
     } catch (error) {
       dispatch(deleteUserFailure(error.message))
     }
+  } else {
+    return;
+  }
 }
+const handleSignOut = async() =>{
+  try {
+    dispatch(signOutStart());
+    const res = await fetch('/api/auth/sign-out');
+    const data = await res.json();
+    if(data.success === false){
+      dispatch(signOutFailure(data.message)); return;
+    }
+    dispatch(signOutSuccess(data));
+  } catch (error) {
+    dispatch(signOutFailure(error.message));
+  }
+}
+
   return (
     <div>
              <div className="p-3 max-w-lg mx-auto">
@@ -112,12 +141,17 @@ function Profile() {
                     <input onChange={handleChange} defaultValue={currentUser.username} type="text" placeholder='username' id='username' className='border p-3 rounded-lg' />
                     <input onChange={handleChange} defaultValue={currentUser.email} type="email" placeholder='email' id='email' className='rounded-lg p-3 border'/>
                     <input onChange={handleChange} type="text" placeholder='password' id='password' className='border p-3 rounded-lg' />
-                    <button className='bg-slate-700 text-white rounded-lg p-3 uppercase hover:opacity-95 disabled:opacity-80'>update</button>
+                    <button disabled={loading} className='bg-slate-700 text-white rounded-lg p-3 uppercase hover:opacity-95 disabled:opacity-80'>{loading? 'Loading...': 'update'}</button>
               </form>
               <div className="flex justify-between mt-5">
                 <span onClick={handleDeleteUser} className='text-red-700 cursor-pointer'>Delete User</span>
-                <span className='text-red-700 cursor-pointer'>Sign out</span>
+                <span onClick={handleSignOut} className='text-red-700 cursor-pointer'>Sign out</span>
+                 
               </div>
+              <p className='text-red-700 mt-5'>{error ? error : ''}</p>
+              <p className='text-green-700 mt-5 self-center text-center'>
+              {updateSuccess ? 'User is updated successfully!' : ''}
+      </p>
              </div>
     </div>
   )

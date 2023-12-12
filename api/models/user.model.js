@@ -18,8 +18,7 @@ const userSchema = new mongoose.Schema(
     },
     avatar: {
       type: String,
-      default:
-        "https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.veryicon.com%2Ficons%2Finternet--web%2Fprejudice%2Fuser-128.html&psig=AOvVaw1qPDmMH-V7Ez3eKr1VtlhC&ust=1702143241555000&source=images&cd=vfe&opi=89978449&ved=0CBEQjRxqFwoTCLjC0vKvgIMDFQAAAAAdAAAAABAD",
+      default: "https://st.quantrimang.com/photos/image/072015/22/avatar.jpg",
     },
   },
   { timestamps: true }

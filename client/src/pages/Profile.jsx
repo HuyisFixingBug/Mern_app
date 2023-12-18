@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux'
 import { useRef } from 'react'
 import { Modal, Button } from 'react-bootstrap';
 import { app } from '../../firebase';
-import {getDownloadURL, getStorage, ref, uploadBytesResumable} from 'firebase/storage'
+import {getDownloadURL, getStorage, list, ref, uploadBytesResumable} from 'firebase/storage'
 import { useDispatch } from 'react-redux';
 import { updateUserStart, updateUserSuccess, updateUserFailure,
 deleteUserFailure,deleteUserSuccess, deleteUserStart, signOutStart, signOutFailure, signOutSuccess } from '../../redux/user/userSlice.js';
@@ -17,6 +17,8 @@ function Profile() {
   const [errorUpload, setErrorUpload] = useState(false);
   const [formData, setFormData] = useState({})
   const [updateSuccess, setUpdateSuccess] = useState(false)
+  const [errorShowListing, setErrorShowListing] = useState(false)
+  const [ShowListing, setShowListing] = useState([])
     // console.log(filePer);
     // console.log(formData);
 
@@ -122,7 +124,39 @@ const handleSignOut = async() =>{
     dispatch(signOutFailure(error.message));
   }
 }
+const handleShowListing = async() =>{
+  try {
+    setErrorShowListing(false);
+    const res = await fetch(`/api/listing/listings/${currentUser._id}`);
+    const data = await res.json();
+    if(data.success===false) {
+      setErrorShowListing(true);
+      return;
+    }
+    
+      setErrorShowListing(false);
+      setShowListing(data)
+    
+  } catch (error) {
+    setErrorShowListing(true);
+  }
+}
+const handleDeleteListing = async(idListing) =>{
+      try {
+        const res = await fetch(`/api/listing/delete/${idListing}`);
+        const data = await res.json();
+        if(data.success === false){
+          console.log(data.message);
+          return;
+        }
+        setShowListing()
+      } catch (error) {
+        
+      }
+}
+const handleEditListing = () =>{
 
+}
   return (
     <div>
              <div className="p-3 max-w-lg mx-auto">
@@ -144,6 +178,7 @@ const handleSignOut = async() =>{
                     <input onChange={handleChange} type="text" placeholder='password' id='password' className='border p-3 rounded-lg' />
                     <button disabled={loading} className='bg-slate-700 text-white rounded-lg p-3 uppercase hover:opacity-95 disabled:opacity-80'>{loading? 'Loading...': 'update'}</button>
                     <Link className='p-3 bg-green-700 rounded-lg uppercase text-center text-white hover:opacity-90' to={"/create-listing"}>Create Listing</Link>
+
               </form>
               <div className="flex justify-between mt-5">
                 <span onClick={handleDeleteUser} className='text-red-700 cursor-pointer'>Delete User</span>
@@ -155,6 +190,30 @@ const handleSignOut = async() =>{
               {updateSuccess ? 'User is updated successfully!' : ''}
       </p>
              </div>
+              <button onClick={handleShowListing}  className='text-green-700 mt-5 w-full text-center items-center text-lg' >Show Listing</button>
+                  {ShowListing && ShowListing.length > 0 &&(
+                    <div className="flex gap-4 flex-col max-w-lg mx-auto p-3">
+                      <h1 className='text-center mt-7 text-2xl font-semibold'>Your Listing</h1>
+                      {ShowListing.map((listing) =>(
+                        <div key={listing._id} className="flex border rounded-lg p-3 justify-between items-center gap-4">
+                          <Link>
+                          <img className='h-16 w-16 object-contain' src={listing.imagesUrls} alt="Listing cover" />
+                          </Link>
+                          <Link className='flex-1'>
+                          <p className='font-semibold'>{listing.name}</p>
+                          </Link>
+                          <div className="flex flex-col items-center">
+                            <Link>
+                              <button onClick={handleDeleteListing} className='text-green-700 uppercase hover:opacity-90 hover:shadow'>Edit</button>
+                              </Link>
+                            <button onClick={handleEditListing(listing._id)} className='text-red-700 uppercase hover:opacity-90 hover:shadow'>
+                              Delete
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
     </div>
   )
 }

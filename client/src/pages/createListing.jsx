@@ -34,6 +34,7 @@ import { useSelector } from 'react-redux';
                 }
                 Promise.all(promises).then((urls) =>{
                     setFormData({...formData, imagesUrls: formData.imagesUrls.concat(urls)});
+                    console.log(promises);
                     SetUploading(false)
                      setUploadImageError(false);
                 }).catch((err) =>{
@@ -98,8 +99,7 @@ import { useSelector } from 'react-redux';
             }
     }
     const handleSubmit =async (e) =>{
-        // navigate('/')
-        console.log("e is", e);
+        
         e.preventDefault();
         try {
             if(+formData.regularPrice < +formData.discountPrice) {
@@ -110,6 +110,7 @@ import { useSelector } from 'react-redux';
                 }
                 SetLoading(true);
                 setError(false);
+                // console.log("1222222", formData)
                     const res = await fetch('/api/listing/create', {
                     method: "POST",
                     headers: {
@@ -127,6 +128,7 @@ import { useSelector } from 'react-redux';
                 }
                 navigate(`/listing/${data._id}`);
             }
+
          catch (error) {
             setError(error.message);
             SetLoading(false);

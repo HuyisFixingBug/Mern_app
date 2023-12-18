@@ -5,7 +5,7 @@ import dotenv from "dotenv";
 import userRouter from "./routes/user.route.js";
 import authRouter from "./routes/auth.route.js";
 import listingRouter from "./routes/listing.route.js";
-import bodyParser from "body-parser";
+// import bodyParser from "body-parser";
 
 import cookieParser from "cookie-parser";
 dotenv.config();
@@ -18,6 +18,17 @@ mongoose
     console.log("mongo connect", error);
   });
 const app = express();
+// import body-parser
+import bodyParser from "body-parser";
+
+// create application/json parser
+var jsonParser = bodyParser.json();
+
+// create application/x-www-form-urlencoded parser
+var urlencodedParser = bodyParser.urlencoded({ extended: false });
+
+// use jsonParser or urlencodedParser before your route handlers
+app.use("/api/auth", jsonParser, authRouter);
 app.listen(3500, () => {
   console.log("Server is running on port 3500!!!");
 });

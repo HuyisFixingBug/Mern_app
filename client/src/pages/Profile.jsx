@@ -8,6 +8,7 @@ import { useDispatch } from 'react-redux';
 import { updateUserStart, updateUserSuccess, updateUserFailure,
 deleteUserFailure,deleteUserSuccess, deleteUserStart, signOutStart, signOutFailure, signOutSuccess } from '../../redux/user/userSlice.js';
 import { Link } from 'react-router-dom';
+import { Next } from 'react-bootstrap/esm/PageItem.js';
 function Profile() {
   const dispatch = useDispatch();
   const {currentUser, loading, error} = useSelector((state) => state.user)
@@ -143,20 +144,22 @@ const handleShowListing = async() =>{
 }
 const handleDeleteListing = async(idListing) =>{
       try {
-        const res = await fetch(`/api/listing/delete/${idListing}`);
+        const res = await fetch(`/api/listing/delete/${idListing}`,{
+          method: 'DELETE',
+        });
         const data = await res.json();
         if(data.success === false){
           console.log(data.message);
           return;
         }
-        setShowListing()
+        setShowListing((prev) => {
+            prev.filter((listing) => listing._id !== idListing)
+        })
       } catch (error) {
-        
+        console.log(error.message);
       }
 }
-const handleEditListing = () =>{
 
-}
   return (
     <div>
              <div className="p-3 max-w-lg mx-auto">
@@ -203,12 +206,13 @@ const handleEditListing = () =>{
                           <p className='font-semibold'>{listing.name}</p>
                           </Link>
                           <div className="flex flex-col items-center">
-                            <Link>
-                              <button onClick={handleDeleteListing} className='text-green-700 uppercase hover:opacity-90 hover:shadow'>Edit</button>
-                              </Link>
-                            <button onClick={handleEditListing(listing._id)} className='text-red-700 uppercase hover:opacity-90 hover:shadow'>
-                              Delete
+                            
+                              <button onClick={() =>handleDeleteListing(listing._id)} className='text-red-700 uppercase hover:opacity-90 hover:shadow'>delete</button>
+                              <Link to={`/edit-listing/${listing._id}`}>
+                            <button  className='text-green-700 uppercase hover:opacity-90 hover:shadow'>
+                              edit
                             </button>
+                            </Link>
                           </div>
                         </div>
                       ))}

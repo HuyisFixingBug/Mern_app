@@ -1,9 +1,9 @@
 import { getDownloadURL, getStorage, ref, uploadBytesResumable } from 'firebase/storage';
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { app } from '../../firebase';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-    function createListing() {
+    function EditListing() {
     const navigate = useNavigate();
     const [files, setFiles] = useState([])
     const [formData, setFormData] = useState({
@@ -25,6 +25,22 @@ import { useSelector } from 'react-redux';
     const [uploading, SetUploading] = useState(false)
     const [loading, SetLoading] = useState(false);
     const {currentUser} = useSelector((state) => state.user)
+    const params = useParams()
+    useEffect(() =>{
+        const getListingFromUseEffect =async () =>{
+              try {
+            const res= await fetch(`/api/listing/get/${params.listingId}`);
+            const data = await res.json();
+            if(data.success===false){
+                console.log(data.message); return;
+            }
+            setFormData(data);
+         } catch (error) {
+            console.log(error);
+         }
+        }
+       getListingFromUseEffect();
+    }, [])
     const handleImagesSubmit = (e) =>{
         SetUploading(true);
             if(files.length > 0 && files.length + formData.imagesUrls.length <7){
@@ -111,7 +127,7 @@ import { useSelector } from 'react-redux';
                 SetLoading(true);
                 setError(false);
                 // console.log("1222222", formData)
-                    const res = await fetch('/api/listing/create', {
+                    const res = await fetch(`/api/listing/edit/${params.listingId}`, {
                     method: "POST",
                     headers: {
                         'Content-Type': 'application/json',
@@ -126,6 +142,7 @@ import { useSelector } from 'react-redux';
                 if(data.success ===false){
                     setError(data.message);
                 }
+                console.log("here is data", data);
                 navigate(`/listing/${data._id}`);
             }
 
@@ -138,13 +155,13 @@ import { useSelector } from 'react-redux';
    const handleDeleteImage = (index) =>{
             setFormData({
                 ...formData,
-                imagesUrls: formData.imagesUrls.filter((_, i) => i!==index)
+                imagesUrls: formData.imagesUrls.filter((_,i) => i!== index)
             })
    }
     return (
     <div>
       <main className='p-3 max-w-4xl mx-auto'>
-        <h1 className='text-3xl font-semibold text-center my-7'>Create a Listing</h1>
+        <h1 className='text-3xl font-semibold text-center my-7'>Update Listing</h1>
         <form onSubmit={handleSubmit} className='flex flex-col sm:flex-row gap-4'>
             <div className="flex flex-col gap-4 flex-1">
                 <input
@@ -231,12 +248,14 @@ import { useSelector } from 'react-redux';
                         />
                         <div className="flex flex-col items-center">
                         <p>Regular Price</p>
-                        {formData.type === 'rent' && (<span className='text-sm'>($ / month)</span>)}
-                        
+                        {formData.type ==='rent' && (
+                        <span className='text-sm'>($ / month)</span>
+
+                        )}
                         </div>
                     </div>
                     {formData.offer && (
-                    <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-2">
                         <input
                         onChange={handleChange}
                         value={formData.discountPrice}
@@ -245,11 +264,14 @@ import { useSelector } from 'react-redux';
                         />
                         <div className="flex flex-col items-center">
                         <p>Discount Price</p>
-                        {formData.type === 'rent' && (<span className='text-sm'>($ / month)</span>)}
+                        {formData.type ==='rent' && (
+                        <span className='text-sm'>($ / month)</span>
+                        )}
                         </div>
-                        
                     </div>
-)}
+                    )}
+                    
+
                 </div>
             </div>
             <div className="flex flex-col flex-1 gap-4">
@@ -280,7 +302,7 @@ import { useSelector } from 'react-redux';
                <p className='text-red-500'>{error && error}</p>
                 <button
                 type='submit'
-                className='uppercase p-3 bg-slate-700 rounded-lg text-white hover:opacity-90 disabled:opacity-80'>Create Listing</button>
+                className='uppercase p-3 bg-slate-700 rounded-lg text-white hover:opacity-90 disabled:opacity-80'>Update Listing</button>
             </div>
         </form>
       </main>
@@ -288,4 +310,4 @@ import { useSelector } from 'react-redux';
   )
 }
 
-export default createListing
+export default EditListing

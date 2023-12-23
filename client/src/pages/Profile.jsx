@@ -183,16 +183,17 @@ const handleDeleteListing = async(idListing) =>{
                     <Link className='p-3 bg-green-700 rounded-lg uppercase text-center text-white hover:opacity-90' to={"/create-listing"}>Create Listing</Link>
 
               </form>
-              <div className="flex justify-between mt-5">
-                <span onClick={handleDeleteUser} className='text-red-700 cursor-pointer'>Delete User</span>
+              <div className="flex justify-between mt-3">
+                <span onClick={handleDeleteUser} className='text-red-700 cursor-pointer'>Delete Account</span>
                 <span onClick={handleSignOut} className='text-red-700 cursor-pointer'>Sign out</span>
                  
               </div>
-              <p className='text-red-700 mt-5'>{error ? error : ''}</p>
-              <p className='text-green-700 mt-5 self-center text-center'>
+              <span className='text-red-700 mt-5'>{error ? error : ''}</span>
+              <span className='text-green-700 mt-5 self-center text-center'>
               {updateSuccess ? 'User is updated successfully!' : ''}
-      </p>
+      </span>
              </div>
+             <div className="pd-2">
               <button onClick={handleShowListing}  className='text-green-700 mt-5 w-full text-center items-center text-lg' >Show Listing</button>
                   {ShowListing && ShowListing.length > 0 &&(
                     <div className="flex gap-4 flex-col max-w-lg mx-auto p-3">
@@ -218,6 +219,7 @@ const handleDeleteListing = async(idListing) =>{
                       ))}
                     </div>
                   )}
+                  </div>
     </div>
   )
 }

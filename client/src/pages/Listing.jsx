@@ -137,7 +137,7 @@ const [contact, setContact] = useState(false)
              onClick={() => setContact(true)}
              className='bg-slate-700 p-3 rounded-lg text-white  uppercase hover:opacity-90'>Contact</button>
             )}
-            {contact && <Contact/>}
+            {contact && <Contact listing={listing}/>}
           </div>
         </div>
       )}

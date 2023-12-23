@@ -193,7 +193,7 @@ const handleDeleteListing = async(idListing) =>{
               {updateSuccess ? 'User is updated successfully!' : ''}
       </span>
              </div>
-             <div className="pd-2">
+             <div className="pb-2">
               <button onClick={handleShowListing}  className='text-green-700 mt-5 w-full text-center items-center text-lg' >Show Listing</button>
                   {ShowListing && ShowListing.length > 0 &&(
                     <div className="flex gap-4 flex-col max-w-lg mx-auto p-3">

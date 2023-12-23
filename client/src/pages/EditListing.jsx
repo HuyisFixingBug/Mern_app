@@ -242,7 +242,7 @@ import { useSelector } from 'react-redux';
                         value={formData.regularPrice}
                         type="number"
                          id='regularPrice'
-                          min='500'
+                          min='50'
                           max='10000000' required
                         className='p-3 border border-gray-300 rounded-lg'
                         />
@@ -259,7 +259,7 @@ import { useSelector } from 'react-redux';
                         <input
                         onChange={handleChange}
                         value={formData.discountPrice}
-                        type="number" id='discountPrice' min='500' max='100000' required
+                        type="number" id='discountPrice' min='50' max='100000' required
                         className='p-3 border border-gray-300 rounded-lg'
                         />
                         <div className="flex flex-col items-center">

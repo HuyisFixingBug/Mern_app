@@ -14,6 +14,7 @@ function Home() {
   const [offerListings, setOfferListings] = useState([]);
   const [rentListings, setRentListings] = useState([]);
   const [saleListings, setSaleListings] = useState([]);
+  const [fullListings, setFullListings] = useState([]);
 
   useEffect (() =>{
     const fetchOffer = async() =>{
@@ -41,6 +42,17 @@ function Home() {
         const res= await fetch('/api/listing/get?type=sale&limit=4');
         const data = await res.json();
         setSaleListings(data);
+        getAllListings()
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    const getAllListings = async() => {
+      try {
+        const res = await fetch('/api/listing/get');
+        const data = await res.json();
+        setFullListings(data);
+        
       } catch (error) {
         console.log(error);
       }
@@ -119,6 +131,19 @@ function Home() {
               </Link>
               <div className="flex gap-6 flex-wrap">
                 {saleListings.map((listing) =>(
+                  <ListingItems listing={listing} key = {listing._id}/>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+         {fullListings && fullListings.length > 0 && (
+          <div className="">
+            <div className="my-3">
+              <h2 className='text-2xl font-semibold text-slate-600'>All Listings</h2>
+              <div className="flex gap-6 flex-wrap">
+                {fullListings.map((listing) =>(
                   <ListingItems listing={listing} key = {listing._id}/>
                 ))}
               </div>

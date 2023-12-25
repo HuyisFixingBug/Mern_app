@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux'
 function Header() {
     const {currentUser} = useSelector((state) =>state.user)
     const navigate = useNavigate();
-    const [searchTerm, setSearchTerm] = useState();
+    const [searchTerm, setSearchTerm] = useState('');
 
 
     const handleSubmit = (e) =>{
@@ -19,8 +19,12 @@ function Header() {
     useEffect (() =>{
         const urlParams = new URLSearchParams(location.search);
         const searchTermFromUrl = urlParams.get('searchTerm');
+        console.log("header",searchTermFromUrl);
         if(searchTermFromUrl) {
             setSearchTerm(searchTermFromUrl)
+        }
+        if(searchTermFromUrl===''){
+            setSearchTerm('')
         }
     }, [location.search])
   return (

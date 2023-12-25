@@ -18,7 +18,7 @@ export default function ListingItems({listing}) {
             {listing.address}
         </span>
         </div>
-        <p className='truncate'>{listing.description}</p>
+        <p className=' line-clamp-2'>{listing.description}</p>
         <p className='text-slate-700 font-bold'>$
             {listing.offer ? listing.discountPrice.toLocaleString('en-US') : listing.regularPrice.toLocaleString('en-US')}
         </p>
